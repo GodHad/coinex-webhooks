@@ -17,6 +17,9 @@ type UserContextType = {
 
     isLoading: boolean;
     setIsLoading: (value: boolean) => void;
+
+    jwtToken: string;
+    setJwtToken: (value: string) => void;
 };
 
 const UserContext = createContext<UserContextType>({
@@ -28,6 +31,9 @@ const UserContext = createContext<UserContextType>({
 
     isLoading: false,
     setIsLoading: () => {},
+
+    jwtToken: '',
+    setJwtToken: () => {}
 })
 
 export default UserContext;

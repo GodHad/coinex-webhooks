@@ -15,7 +15,9 @@ const HookModal = ({
 }) => {
     const [_hook, setHook] = useState<Hook>({
         url: '',
+        name: '',
         coinExApiKey: '',
+        coinExApiSecret: '',
         status: 0,
     });
 
@@ -32,13 +34,15 @@ const HookModal = ({
     useEffect(() => {
         setHook(hook ? { ...hook } : {
             url: '',
+            name: '',
             coinExApiKey: '',
+            coinExApiSecret: '',
             status: 0,
         })
     }, [hook])
 
     return (
-        <div className={`duration-500 w-full h-screen absolute top-0 z-[80] overflow-x-hidden transition-all overflow-y-auto pointer-events-none ${isOpen ? 'opacity-100' : 'opacity-0 -z-10'}`}>
+        <div className={`duration-500 w-full h-screen absolute top-0 overflow-x-hidden transition-all overflow-y-auto pointer-events-none ${isOpen ? 'opacity-100 z-[80]' : 'opacity-0 -z-10'}`}>
             <div className="max-w-lg mx-auto my-auto">
                 <div className="flex flex-col bg-white bg-clip-border border border-gray-200 dark:border-gray-900 shadow-sm rounded-xl pointer-events-auto dark:!bg-navy-800 dark:text-white">
                     <div className="flex justify-between items-center py-3 px-4">
@@ -62,6 +66,16 @@ const HookModal = ({
                         <InputField
                             variant="auth"
                             extra="mb-3"
+                            label="Webhook Name*"
+                            placeholder="Webhook Name"
+                            id="name"
+                            type="text"
+                            value={_hook.name}
+                            onChange={handleInputChange}
+                        />
+                        <InputField
+                            variant="auth"
+                            extra="mb-3"
                             label="Webhook URL*"
                             placeholder="Webhook URL"
                             id="url"
@@ -77,6 +91,16 @@ const HookModal = ({
                             id="coinExApiKey"
                             type="text"
                             value={_hook.coinExApiKey}
+                            onChange={handleInputChange}
+                        />
+                        <InputField
+                            variant="auth"
+                            extra="mb-3"
+                            label="CoinEx API Secret*"
+                            placeholder="CoinEx API Secret"
+                            id="coinExApiSecret"
+                            type="text"
+                            value={_hook.coinExApiSecret}
                             onChange={handleInputChange}
                         />
                         <div className="flex justify-start items-center gap-x-2 py-3 px-4">

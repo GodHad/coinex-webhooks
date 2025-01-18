@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Card from "components/card";
 import { MdAdd, MdCancel, MdCheckCircle, MdDelete, MdDeleteOutline, MdEdit, MdPause, MdPlayArrow } from "react-icons/md";
 import {
@@ -14,6 +14,7 @@ import { useMutation } from "react-query";
 import { deleteHook, getHooks, insertHook, updateHook } from "utils/api";
 import { toast } from "react-toastify";
 import HookModal from "./HookModal";
+import UserContext from "contexts/UserContext";
 
 const columnHelper = createColumnHelper<Hook>();
 
@@ -23,6 +24,17 @@ export default function ComplexTable() {
   const [hook, setHook] = useState<Hook | null>(null);
 
   const columns = [
+    columnHelper.accessor("name", {
+      id: "name",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">Webhook Name</p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
     columnHelper.accessor("url", {
       id: "url",
       header: () => (
@@ -49,7 +61,7 @@ export default function ComplexTable() {
             <MdCancel className="text-red-500 me-1 dark:text-red-300" />
           )}
           <p className="text-sm font-bold text-navy-700 dark:text-white">
-            {info.getValue() === 0 ? 'Active' : 'Stopped'}
+            {info.getValue() === 0 ? 'Active' : 'Deactive'}
           </p>
         </div>
       ),
@@ -65,12 +77,10 @@ export default function ComplexTable() {
         </p>
       ),
     }),
-    columnHelper.accessor("totalCalls", {
-      id: "totalCalls",
+    columnHelper.accessor("coinExApiSecret", {
+      id: "coinExApiSecret",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Total Calls
-        </p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">CoinEx API Secret</p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -78,6 +88,19 @@ export default function ComplexTable() {
         </p>
       ),
     }),
+    // columnHelper.accessor("totalCalls", {
+    //   id: "totalCalls",
+    //   header: () => (
+    //     <p className="text-sm font-bold text-gray-600 dark:text-white">
+    //       Total Calls
+    //     </p>
+    //   ),
+    //   cell: (info) => (
+    //     <p className="text-sm font-bold text-navy-700 dark:text-white">
+    //       {info.getValue()}
+    //     </p>
+    //   ),
+    // }),
     columnHelper.accessor("_id", {
       id: "_id",
       header: () => (
@@ -98,7 +121,8 @@ export default function ComplexTable() {
     })
   ];
 
-  const [data, setData] = React.useState<Hook[]>([]);
+  const [data, setData] = useState<Hook[]>([]);
+  const {jwtToken} = useContext(UserContext);
 
   const table = useReactTable({
     data,
@@ -117,13 +141,13 @@ export default function ComplexTable() {
       setData(data);
     },
     onError: (error: any) => {
-      toast.error(error.message || error)
+      toast.error(error.response.data.message || error.message || error);
     }
   })
 
   useEffect(() => {
-    getHooksMutation.mutate();
-  }, []);
+    getHooksMutation.mutate(jwtToken);
+  }, [jwtToken]);
 
   const handleClickAdd = () => {
     setHook(null);
@@ -188,7 +212,7 @@ export default function ComplexTable() {
       />
 
       <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
-        <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
+        <div className="mt-8 overflow-x-auto xl:overflow-x-hidden">
           <table className="w-full">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (

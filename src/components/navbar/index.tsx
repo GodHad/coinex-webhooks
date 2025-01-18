@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Dropdown from 'components/dropdown';
 import { FiAlignJustify } from 'react-icons/fi';
 import NavLink from 'components/link/NavLink';
@@ -13,7 +13,7 @@ const Navbar = (props: {
   secondary?: boolean | string;
   [x: string]: any;
 }) => {
-  const { onOpenSidenav, brandText, mini, hovered } = props;
+  const { onOpenSidenav, brandText } = props;
   const [darkmode, setDarkmode] = React.useState(
     document.body.classList.contains('dark'),
   );
@@ -21,10 +21,15 @@ const Navbar = (props: {
   const { user, setUser } = useContext(UserContext);
 
   const handleLogout = () => {
-    window.localStorage.removeItem('jwtToken');
     setUser(null);
-    redirect('/auth/sign-in');
+    window.localStorage.removeItem('jwtToken');
   }
+
+  useEffect(() => {
+    if (!user) {
+      redirect('/auth/sign-in');
+    }
+  }, [user]);
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
@@ -194,7 +199,7 @@ const Navbar = (props: {
             </div>
             <div className="mt-3 h-px w-full bg-gray-200 dark:bg-white/20 " />
 
-            <div className="ml-4 mt-3 flex flex-col">
+            <div className="ml-4 mt-3 flex flex-col cursor-pointer">
               <Link
                 href="/profile"
                 className="text-sm text-gray-800 dark:text-white hover:dark:text-white"

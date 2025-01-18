@@ -14,7 +14,7 @@ function SignInDefault() {
     password: ''
   })
 
-  const { user, setUser } = useContext(UserContext);
+  const { user, jwtToken, setUser, setJwtToken } = useContext(UserContext);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +22,8 @@ function SignInDefault() {
     if (result) {
       toast.success(result.message);
       setUser(result.user);
+      setJwtToken(result.token);
+
       setForm({
         email: '',
         password: ''
@@ -43,6 +45,7 @@ function SignInDefault() {
       if (result) {
         toast.success(result.message);
         setUser(result.user);
+        setJwtToken(result.token);
         setForm({
           email: '',
           password: ''
@@ -52,7 +55,7 @@ function SignInDefault() {
       }
     }
   }
-  
+
   const hasRun = useRef(false);
 
   useEffect(() => {
@@ -60,7 +63,7 @@ function SignInDefault() {
       handleLoginWithJWT();
       hasRun.current = true;
     }
-  }, [handleLoginWithJWT]);
+  }, []);
 
   return (
     <Default

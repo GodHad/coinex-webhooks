@@ -16,14 +16,15 @@ function SignUp() {
         password: ''
     })
 
-    const { setUser } = useContext(UserContext);
+    const { setUser, setJwtToken } = useContext(UserContext);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const result = await registerUser(form);
-        if (result) {
+        if (!result) {
             toast.success(result.message);
             setUser(result.user);
+            setJwtToken(result.token);
             setForm({
                 firstName: '',
                 lastName: '',

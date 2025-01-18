@@ -10,6 +10,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [login, setLogin] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [jwtToken, setJwtToken] = useState<string>('');
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -20,7 +21,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                     login,
                     setLogin,
                     isLoading,
-                    setIsLoading
+                    setIsLoading,
+                    jwtToken,
+                    setJwtToken
                 }}
             >
                 {children}

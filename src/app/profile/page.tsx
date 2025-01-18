@@ -40,7 +40,7 @@ const ProfilePage = () => {
 
     return (
         <>
-            <div className="w-full text-navy-700 dark:text-white">
+            <div className="w-full text-navy-700 dark:text-white mt-2">
                 <div className="block md:flex gap-4">
                     <div className="border border-gray-300 dark:border-gray-900 rounded-md flex-grow-3 flex-shrink basis-0">
                         <div className="flex flex-col items-center p-3 border-b border-gray-300 dark:border-gray-900">

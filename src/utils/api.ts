@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { headers } from 'next/headers';
 import { toast } from 'react-toastify';
 import { Hook } from 'types/hook';
 
@@ -23,7 +24,7 @@ export const registerUser = async (data) => {
         const response = await axios.post(`${backendUrl}api/auth/register`, data);
         return response.data;
     } catch (error) {
-        toast.error(error.message || error)
+        toast.error(error.response.data.message || error.message || error)
         return false;
     }
 }
@@ -33,7 +34,7 @@ export const loginUser = async (data) => {
         const response = await axios.post(`${backendUrl}api/auth/login`, data);
         return response.data;
     } catch (error) {
-        toast.error(error.message || error);
+        toast.error(error.response.data.message || error.message || error);
         return false;
     }
 }
@@ -43,7 +44,7 @@ export const updateUser = async (data) => {
         const response = await axios.post(`${backendUrl}api/auth/update-user`, data);
         return response.data;
     } catch (error) {
-        toast.error(error.message || error);
+        toast.error(error.response.data.message || error.message || error);
         return false;
     }
 }
@@ -53,13 +54,17 @@ export const loginWithJWT = async () => {
         const response = await axios.get(`${backendUrl}api/auth/login-with-jwt`);
         return response.data;
     } catch (error) {
-        toast.error(error.message || error);
+        toast.error(error.response.data.message || error.message || error);
         return false;
     }
 }
 
-export const getHooks = async () => {
-    const response = await axios.get(`${backendUrl}api/hooks`);
+export const getHooks = async (jwtToken: string) => {
+    const response = await axios.get(`${backendUrl}api/hooks`, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     return response.data;
 }
 
@@ -68,7 +73,7 @@ export const insertHook = async (hook) => {
         const response = await axios.post(`${backendUrl}api/hooks/create`, hook);
         return response.data;
     } catch (error) {
-        toast.error(error.message || error);
+        toast.error(error.response.data.message || error.message || error);
         return false;
     }
 }
@@ -78,7 +83,7 @@ export const updateHook = async (hook: Hook) => {
         const response = await axios.put(`${backendUrl}api/hooks/update/${hook._id}`, hook);
         return response.data;
     } catch (error) {
-        toast.error(error.message || error);
+        toast.error(error.response.data.message || error.message || error);
         return false;
     }
 }
@@ -88,7 +93,7 @@ export const deleteHook = async (id) => {
         const response = await axios.delete(`${backendUrl}api/hooks/${id}`);
         return response.data;
     } catch (error) {
-        toast.error(error.message || error);
+        toast.error(error.response.data.message || error.message || error);
         return false;
     }
 }
