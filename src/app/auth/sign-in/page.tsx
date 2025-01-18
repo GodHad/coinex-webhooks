@@ -2,8 +2,66 @@
 import InputField from 'components/fields/InputField';
 import Default from 'components/auth/variants/DefaultAuthLayout';
 import Link from 'next/link';
+import { useContext, useEffect, useRef, useState } from 'react';
+import UserContext from 'contexts/UserContext';
+import { redirect } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { loginUser, loginWithJWT } from 'utils/api';
 
 function SignInDefault() {
+  const [form, setForm] = useState({
+    email: '',
+    password: ''
+  })
+
+  const { user, setUser } = useContext(UserContext);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = await loginUser(form);
+    if (result) {
+      toast.success(result.message);
+      setUser(result.user);
+      setForm({
+        email: '',
+        password: ''
+      })
+      window.localStorage.setItem('jwtToken', result.token);
+      redirect('/dashboard');
+    }
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  }
+
+  const handleLoginWithJWT = async () => {
+    const token = window.localStorage.getItem('jwtToken');
+    if (token && !user) {
+      const result = await loginWithJWT();
+      if (result) {
+        toast.success(result.message);
+        setUser(result.user);
+        setForm({
+          email: '',
+          password: ''
+        })
+        window.localStorage.setItem('jwtToken', result.token);
+        redirect('/dashboard');
+      }
+    }
+  }
+  
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    if (!hasRun.current) {
+      handleLoginWithJWT();
+      hasRun.current = true;
+    }
+  }, [handleLoginWithJWT]);
+
   return (
     <Default
       maincard={
@@ -16,56 +74,35 @@ function SignInDefault() {
             <p className="mb-9 ml-1 text-base text-gray-600">
               Enter your email and password to sign in!
             </p>
-            {/* <div className="mb-6 flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-lightPrimary hover:cursor-pointer dark:bg-navy-800 dark:text-white">
-              <div className="rounded-full text-xl">
-                <FcGoogle />
-              </div>
-              <p className="text-sm font-medium text-navy-700 dark:text-white">
-                Sign In with Google
-              </p>
-            </div>
-            <div className="mb-6 flex items-center  gap-3">
-              <div className="h-px w-full bg-gray-200 dark:!bg-navy-700" />
-              <p className="text-base text-gray-600"> or </p>
-              <div className="h-px w-full bg-gray-200 dark:!bg-navy-700" />
-            </div> */}
-            {/* Email */}
-            <InputField
-              variant="auth"
-              extra="mb-3"
-              label="Email*"
-              placeholder="mail@simmmple.com"
-              id="email"
-              type="text"
-            />
+            <form onSubmit={onSubmit}>
+              {/* Email */}
+              <InputField
+                variant="auth"
+                extra="mb-3"
+                label="Email*"
+                placeholder="Your Email Address"
+                id="email"
+                type="email"
+                value={form.email}
+                onChange={handleInputChange}
+              />
 
-            {/* Password */}
-            <InputField
-              variant="auth"
-              extra="mb-3"
-              label="Password*"
-              placeholder="Min. 8 characters"
-              id="password"
-              type="password"
-            />
-            {/* Checkbox */}
-            {/* <div className="mb-4 flex items-center justify-between px-2">
-              <div className="mt-2 flex items-center">
-                <Checkbox />
-                <p className="ml-2 text-sm font-medium text-navy-700 dark:text-white">
-                  Keep me logged In
-                </p>
-              </div>
-              <a
-                className="text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
-                href=" "
-              >
-                Forgot Password?
-              </a>
-            </div> */}
-            <button className="linear w-full rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
-              Sign In
-            </button>
+              {/* Password */}
+              <InputField
+                variant="auth"
+                extra="mb-3"
+                label="Password*"
+                placeholder="Min. 8 characters"
+                id="password"
+                type="password"
+                value={form.password}
+                onChange={handleInputChange}
+              />
+
+              <button type='submit' className="linear w-full rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+                Sign In
+              </button>
+            </form>
             <div className="mt-4">
               <span className="text-sm font-medium text-navy-700 dark:text-gray-500">
                 Not registered yet?

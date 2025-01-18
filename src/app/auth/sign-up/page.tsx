@@ -2,8 +2,44 @@
 import InputField from 'components/fields/InputField';
 import Default from 'components/auth/variants/DefaultAuthLayout';
 import Link from 'next/link';
+import { useContext, useState } from 'react';
+import { registerUser } from 'utils/api';
+import UserContext, { User } from 'contexts/UserContext';
+import { toast } from 'react-toastify';
+import { redirect } from 'next/navigation';
 
-function SignInDefault() {
+function SignUp() {
+    const [form, setForm] = useState<User>({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: ''
+    })
+
+    const { setUser } = useContext(UserContext);
+
+    const onSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const result = await registerUser(form);
+        if (result) {
+            toast.success(result.message);
+            setUser(result.user);
+            setForm({
+                firstName: '',
+                lastName: '',
+                email: '',
+                password: ''
+            })
+            window.localStorage.setItem('jwtToken', result.token);
+            redirect('/dashboard');
+        }
+    }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value }));
+    }
+
     return (
         <Default
             maincard={
@@ -16,60 +52,57 @@ function SignInDefault() {
                         <p className="mb-9 ml-1 text-base text-gray-600">
                             Enter your information to sign up!
                         </p>
-                        {/* <div className="mb-6 flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-lightPrimary hover:cursor-pointer dark:bg-navy-800 dark:text-white">
-              <div className="rounded-full text-xl">
-                <FcGoogle />
-              </div>
-              <p className="text-sm font-medium text-navy-700 dark:text-white">
-                Sign In with Google
-              </p>
-            </div>
-            <div className="mb-6 flex items-center  gap-3">
-              <div className="h-px w-full bg-gray-200 dark:!bg-navy-700" />
-              <p className="text-base text-gray-600"> or </p>
-              <div className="h-px w-full bg-gray-200 dark:!bg-navy-700" />
-            </div> */}
-                        {/* First Name */}
-                        <InputField
-                            variant="auth"
-                            extra="mb-3"
-                            label="First Name*"
-                            placeholder="Your First Name"
-                            id="firstName"
-                            type="text"
-                        />
-                        {/* Last Name*/}
-                        <InputField
-                            variant="auth"
-                            extra="mb-3"
-                            label="Last Name*"
-                            placeholder="Your Last Name"
-                            id="lastName"
-                            type="text"
-                        />
+                        <form onSubmit={onSubmit}>
+                            {/* First Name */}
+                            <InputField
+                                variant="auth"
+                                extra="mb-3"
+                                label="First Name*"
+                                placeholder="Your First Name"
+                                id="firstName"
+                                type="text"
+                                value={form.firstName}
+                                onChange={handleInputChange}
+                            />
+                            {/* Last Name*/}
+                            <InputField
+                                variant="auth"
+                                extra="mb-3"
+                                label="Last Name*"
+                                placeholder="Your Last Name"
+                                id="lastName"
+                                type="text"
+                                value={form.lastName}
+                                onChange={handleInputChange}
+                            />
 
-                        {/* Email */}
-                        <InputField
-                            variant="auth"
-                            extra="mb-3"
-                            label="Email*"
-                            placeholder="Your Email Address"
-                            id="email"
-                            type="text"
-                        />
+                            {/* Email */}
+                            <InputField
+                                variant="auth"
+                                extra="mb-3"
+                                label="Email*"
+                                placeholder="Your Email Address"
+                                id="email"
+                                type="email"
+                                value={form.email}
+                                onChange={handleInputChange}
+                            />
 
-                        {/* Password */}
-                        <InputField
-                            variant="auth"
-                            extra="mb-3"
-                            label="Password*"
-                            placeholder="Min. 8 characters"
-                            id="password"
-                            type="password"
-                        />
-                        <button className="linear w-full rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
-                            Sign Up
-                        </button>
+                            {/* Password */}
+                            <InputField
+                                variant="auth"
+                                extra="mb-3"
+                                label="Password*"
+                                placeholder="Min. 8 characters"
+                                id="password"
+                                type="password"
+                                value={form.password}
+                                onChange={handleInputChange}
+                            />
+                            <button type='submit' className="linear w-full rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+                                Sign Up
+                            </button>
+                        </form>
                         <div className="mt-4">
                             <span className="text-sm font-medium text-navy-700 dark:text-gray-500">
                                 Already have an account?
@@ -88,4 +121,4 @@ function SignInDefault() {
     );
 }
 
-export default SignInDefault;
+export default SignUp;

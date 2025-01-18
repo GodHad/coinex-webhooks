@@ -1,9 +1,6 @@
-import React from "react";
-import CardMenu from "components/card/CardMenu";
+import React, { useEffect, useState } from "react";
 import Card from "components/card";
-import Progress from "components/progress";
-import { MdCancel, MdCheckCircle, MdOutlineError } from "react-icons/md";
-
+import { MdAdd, MdCancel, MdCheckCircle, MdDelete, MdDeleteOutline, MdEdit, MdPause, MdPlayArrow } from "react-icons/md";
 import {
   createColumnHelper,
   flexRender,
@@ -12,26 +9,24 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { Hook } from "types/hook";
+import { useMutation } from "react-query";
+import { deleteHook, getHooks, insertHook, updateHook } from "utils/api";
+import { toast } from "react-toastify";
+import HookModal from "./HookModal";
 
-type RowObj = {
-  name: string;
-  status: string;
-  date: string;
-  progress: number;
-};
+const columnHelper = createColumnHelper<Hook>();
 
-const columnHelper = createColumnHelper<RowObj>();
+export default function ComplexTable() {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [hook, setHook] = useState<Hook | null>(null);
 
-// const columns = columnsDataCheck;
-export default function ComplexTable(props: { tableData: any }) {
-  const { tableData } = props;
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  let defaultData = tableData;
   const columns = [
-    columnHelper.accessor("name", {
-      id: "name",
+    columnHelper.accessor("url", {
+      id: "url",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">Webhook URL</p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -48,23 +43,21 @@ export default function ComplexTable(props: { tableData: any }) {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          {info.getValue() === "Approved" ? (
+          {info.getValue() === 0 ? (
             <MdCheckCircle className="text-green-500 me-1 dark:text-green-300" />
-          ) : info.getValue() === "Disable" ? (
+          ) : (
             <MdCancel className="text-red-500 me-1 dark:text-red-300" />
-          ) : info.getValue() === "Error" ? (
-            <MdOutlineError className="text-amber-500 me-1 dark:text-amber-300" />
-          ) : null}
+          )}
           <p className="text-sm font-bold text-navy-700 dark:text-white">
-            {info.getValue()}
+            {info.getValue() === 0 ? 'Active' : 'Stopped'}
           </p>
         </div>
       ),
     }),
-    columnHelper.accessor("date", {
-      id: "date",
+    columnHelper.accessor("coinExApiKey", {
+      id: "coinExApiKey",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">CoinEx API Key</p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -72,21 +65,41 @@ export default function ComplexTable(props: { tableData: any }) {
         </p>
       ),
     }),
-    columnHelper.accessor("progress", {
-      id: "progress",
+    columnHelper.accessor("totalCalls", {
+      id: "totalCalls",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          PROGRESS
+          Total Calls
         </p>
       ),
       cell: (info) => (
-        <div className="flex items-center">
-          <Progress width="w-[108px]" value={info.getValue()} />
-        </div>
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
       ),
     }),
-  ]; // eslint-disable-next-line
-  const [data, setData] = React.useState(() => [...defaultData]);
+    columnHelper.accessor("_id", {
+      id: "_id",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Actions
+        </p>
+      ),
+      cell: (info) => (
+        <div className="flex gap-1">
+          <MdEdit className="w-5 h-5 cursor-pointer" onClick={() => handleEdit(info.row.original)} />
+          {info.row.original.status === 0 ?
+            <MdPause className="w-5 h-5 cursor-pointer" onClick={() => handleSetStatus(info.row.original)} /> :
+            <MdPlayArrow className="w-5 h-5 cursor-pointer" onClick={() => handleSetStatus(info.row.original)} />
+          }
+          <MdDeleteOutline className="w-5 h-5 cursor-pointer" onClick={() => handleDelete(info.getValue())} />
+        </div>
+      )
+    })
+  ];
+
+  const [data, setData] = React.useState<Hook[]>([]);
+
   const table = useReactTable({
     data,
     columns,
@@ -98,70 +111,145 @@ export default function ComplexTable(props: { tableData: any }) {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
-  return (
-    <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
-      <div className="relative flex items-center justify-between pt-4">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Complex Table
-        </div>
-        <CardMenu />
-      </div>
 
-      <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
-        <table className="w-full">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="!border-px !border-gray-400">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <th
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
-                    >
-                      <div className="items-center justify-between text-xs text-gray-200">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: "",
-                          desc: "",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table
-              .getRowModel()
-              .rows.slice(0, 5)
-              .map((row) => {
-                return (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <td
-                          key={cell.id}
-                          className="min-w-[150px] border-white/0 py-3  pr-4"
-                        >
+  const getHooksMutation = useMutation(getHooks, {
+    onSuccess: (data) => {
+      setData(data);
+    },
+    onError: (error: any) => {
+      toast.error(error.message || error)
+    }
+  })
+
+  useEffect(() => {
+    getHooksMutation.mutate();
+  }, [getHooksMutation]);
+
+  const handleClickAdd = () => {
+    setHook(null);
+    setIsOpen(true);
+  }
+
+  const handleEdit = (_hook) => {
+    setHook(_hook);
+    setIsOpen(true);
+  }
+
+  const handleSubmit = async (_hook: Hook) => {
+    if (!hook) {
+      const result = await insertHook(_hook);
+      if (result) {
+        setData(prev => [...prev, result.hook]);
+        toast.success(result.message);
+        setIsOpen(false);
+      }
+    } else {
+      const result = await updateHook(_hook);
+      if (result) {
+        setData(prev => prev.map(hook => hook._id === _hook._id ? result.hook : hook));
+        toast.success(result.message);
+        setIsOpen(false);
+      }
+    }
+  }
+
+  const handleSetStatus = async (_hook: Hook) => {
+    _hook.status = 1 - _hook.status;
+    const result = await updateHook(_hook);
+    if (result) {
+      setData(prev => prev.map(hook => hook._id === _hook._id ? result.hook : hook));
+      toast.success(result.message);
+      setIsOpen(false);
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    const result = await deleteHook(id);
+    if (result) {
+      setData(prev => prev.filter(hook => hook._id !== id));
+      toast.success(result.message);
+    }
+  }
+
+  return (
+    <div className="relative w-full h-full">
+      <button
+        className="flex gap-2 my-4 rounded-xl bg-brand-500 px-4 py-2 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200 cursor-pointer"
+        onClick={handleClickAdd}
+      >
+        <MdAdd className="h-6 w-6" /> Add
+      </button>
+
+      <HookModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        hook={hook}
+        handleSubmit={handleSubmit}
+      />
+
+      <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
+        <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
+          <table className="w-full">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className="!border-px !border-gray-400">
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <th
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
+                      >
+                        <div className="items-center justify-between text-xs text-gray-200">
                           {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
+                            header.column.columnDef.header,
+                            header.getContext()
                           )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
-      </div>
-    </Card>
+                          {{
+                            asc: "",
+                            desc: "",
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.length > 0 ?
+                table
+                  .getRowModel()
+                  .rows
+                  .map((row) => {
+                    return (
+                      <tr key={row.id}>
+                        {row.getVisibleCells().map((cell) => {
+                          return (
+                            <td
+                              key={cell.id}
+                              className="min-w-[150px] border-white/0 py-3  pr-4"
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })
+                :
+                <tr className='border-t border-[#EEEEEE] dark:border-strokedark'>
+                  <td colSpan={table.getHeaderGroups()[0].headers.length} className='text-center px-5 py-4 lg:px-7 2xl:px-11'>No Data</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
   );
 }

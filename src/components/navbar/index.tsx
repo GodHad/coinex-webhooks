@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Dropdown from 'components/dropdown';
 import { FiAlignJustify } from 'react-icons/fi';
 import NavLink from 'components/link/NavLink';
 import { RiMoonFill, RiSunFill } from 'react-icons/ri';
 import Link from 'next/link';
+import UserContext from 'contexts/UserContext';
+import { redirect } from 'next/navigation';
 
 const Navbar = (props: {
   onOpenSidenav: () => void;
@@ -15,6 +17,15 @@ const Navbar = (props: {
   const [darkmode, setDarkmode] = React.useState(
     document.body.classList.contains('dark'),
   );
+
+  const { user, setUser } = useContext(UserContext);
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('jwtToken');
+    setUser(null);
+    redirect('/auth/sign-in');
+  }
+
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
       <div className="ml-[6px]">
@@ -167,17 +178,17 @@ const Navbar = (props: {
           button={(
             <button className='inline-flex appearance-none items-center outline-offset-2 transition-all duration-300'>
               <div className='rounded-full flex justify-center text-center uppercase w-[40px] h-[40px] bg-[#11047A] text-white items-center'>
-                J
+                {user && `${user.firstName[0]}${user.lastName[0]}`}
               </div>
             </button>
           )}
           classNames={'py-2 top-8 -left-[180px] w-max'}
         >
-          <div className="flex h-48 w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
+          <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none pb-4">
             <div className="ml-4 mt-3">
               <div className="flex items-center gap-2">
                 <p className="text-sm font-bold text-navy-700 dark:text-white">
-                  👋 Hey, Adela
+                  👋 Hey, {user && `${user.firstName} ${user.lastName}`}
                 </p>{' '}
               </div>
             </div>
@@ -191,8 +202,8 @@ const Navbar = (props: {
                 Profile
               </Link>
               <a
-                href=" "
                 className="mt-3 text-sm font-medium text-red-500 hover:text-red-500"
+                onClick={handleLogout}
               >
                 Log Out
               </a>
