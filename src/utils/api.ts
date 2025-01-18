@@ -1,5 +1,4 @@
 import Axios from 'axios';
-import { headers } from 'next/headers';
 import { toast } from 'react-toastify';
 import { Hook } from 'types/hook';
 
