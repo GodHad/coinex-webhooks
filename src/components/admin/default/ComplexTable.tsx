@@ -123,7 +123,7 @@ export default function ComplexTable() {
 
   useEffect(() => {
     getHooksMutation.mutate();
-  }, [getHooksMutation]);
+  }, []);
 
   const handleClickAdd = () => {
     setHook(null);
