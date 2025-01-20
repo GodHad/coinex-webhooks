@@ -4,6 +4,7 @@ import React from 'react';
 
 // Icon Imports
 import {
+  MdHistory,
   MdKey,
   MdLock,
   MdPerson,
@@ -21,6 +22,12 @@ const routes = [
     layout: '/profile',
     path: '/',
     icon: <MdPerson className='h-6 w-6' />
+  },
+  {
+    name: 'History',
+    layout: '/history',
+    path: '/',
+    icon: <MdHistory className='h-6 w-6' />
   },
   {
     name: 'Sign In',

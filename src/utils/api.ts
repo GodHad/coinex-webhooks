@@ -118,3 +118,25 @@ export const deleteHook = async (id) => {
         return false;
     }
 }
+
+export const getHistories = async ({
+    perPage = 10,
+    searchTerm,
+    currentPage = 1
+}: {
+    perPage: number,
+    searchTerm: string;
+    currentPage: number
+}) => {
+    try {
+        const response = await axios.get(`${backendUrl}api/histories?perPage=${perPage}&currentPage=${currentPage}&searchTerm=${searchTerm}`, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        toast.error(error.response.data.message || error.message || error);
+        return [];
+    }
+}

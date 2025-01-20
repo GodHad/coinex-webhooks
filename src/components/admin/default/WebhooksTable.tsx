@@ -18,7 +18,7 @@ import UserContext from "contexts/UserContext";
 
 const columnHelper = createColumnHelper<Hook>();
 
-export default function ComplexTable() {
+export default function WebhooksTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [hook, setHook] = useState<Hook | null>(null);

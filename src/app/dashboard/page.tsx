@@ -1,5 +1,5 @@
 'use client';
-import ComplexTable from 'components/admin/default/ComplexTable';
+import WebhooksTable from 'components/admin/default/WebhooksTable';
 import UserContext from 'contexts/UserContext';
 import { useContext } from 'react';
 import { redirect } from 'next/navigation';
@@ -9,7 +9,7 @@ const Dashboard = () => {
     if (!user) redirect('/auth/sign-in');
 
     return (
-        <ComplexTable />
+        <WebhooksTable />
     );
 };
 
