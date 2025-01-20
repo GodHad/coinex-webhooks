@@ -75,17 +75,16 @@ function SignInDefault() {
               Sign In
             </h3>
             <p className="mb-9 ml-1 text-base text-gray-600">
-              Enter your email and password to sign in!
+              Enter your username and password to sign in!
             </p>
             <form onSubmit={onSubmit}>
               {/* Email */}
               <InputField
                 variant="auth"
                 extra="mb-3"
-                label="Email*"
-                placeholder="Your Email Address"
+                label="Username*"
+                placeholder="User name"
                 id="email"
-                type="email"
                 value={form.email}
                 onChange={handleInputChange}
               />

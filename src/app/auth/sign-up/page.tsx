@@ -81,10 +81,9 @@ function SignUp() {
                             <InputField
                                 variant="auth"
                                 extra="mb-3"
-                                label="Email*"
-                                placeholder="Your Email Address"
+                                label="Username*"
+                                placeholder="Username"
                                 id="email"
-                                type="email"
                                 value={form.email}
                                 onChange={handleInputChange}
                             />

@@ -50,7 +50,7 @@ const ProfilePage = () => {
                             <h3 className="text-xl font-bold mt-4">{`${user.firstName} ${user.lastName}`}</h3>
                         </div>
                         <div className="p-3">
-                            <p>Email</p>
+                            <p>Username</p>
                             <p className="font-bold">{user.email}</p>
                         </div>
                     </div>
@@ -73,9 +73,8 @@ const ProfilePage = () => {
                                 />
                                 <InputField
                                     id="email"
-                                    label="Email"
+                                    label="Username"
                                     placeholder={user.email}
-                                    type="email"
                                     value={form.email}
                                     onChange={handleInputChange}
                                 />
