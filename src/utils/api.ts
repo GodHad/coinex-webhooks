@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Hook } from 'types/hook';
 
@@ -12,15 +12,13 @@ const getToken = () => {
     return null;
 }
 
-const axios = Axios.create({
-    headers: {
-        Authorization: `Bearer ${getToken()}`
-    }
-})
-
 export const registerUser = async (data) => {
     try {
-        const response = await axios.post(`${backendUrl}api/auth/register`, data);
+        const response = await axios.post(`${backendUrl}api/auth/register`, data, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
         return response.data;
     } catch (error) {
         toast.error(error.response.data.message || error.message || error)
@@ -30,7 +28,11 @@ export const registerUser = async (data) => {
 
 export const loginUser = async (data) => {
     try {
-        const response = await axios.post(`${backendUrl}api/auth/login`, data);
+        const response = await axios.post(`${backendUrl}api/auth/login`, data, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
         return response.data;
     } catch (error) {
         toast.error(error.response.data.message || error.message || error);
@@ -40,7 +42,11 @@ export const loginUser = async (data) => {
 
 export const updateUser = async (data) => {
     try {
-        const response = await axios.post(`${backendUrl}api/auth/update-user`, data);
+        const response = await axios.post(`${backendUrl}api/auth/update-user`, data, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
         return response.data;
     } catch (error) {
         toast.error(error.response.data.message || error.message || error);
@@ -50,7 +56,11 @@ export const updateUser = async (data) => {
 
 export const loginWithJWT = async () => {
     try {
-        const response = await axios.get(`${backendUrl}api/auth/login-with-jwt`);
+        const response = await axios.get(`${backendUrl}api/auth/login-with-jwt`, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
         return response.data;
     } catch (error) {
         toast.error(error.response.data.message || error.message || error);
@@ -61,7 +71,7 @@ export const loginWithJWT = async () => {
 export const getHooks = async (jwtToken: string) => {
     const response = await axios.get(`${backendUrl}api/hooks`, {
         headers: {
-            Authorization: `Bearer ${jwtToken}`
+            Authorization: `Bearer ${getToken()}`
         }
     });
     return response.data;
@@ -69,7 +79,11 @@ export const getHooks = async (jwtToken: string) => {
 
 export const insertHook = async (hook) => {
     try {
-        const response = await axios.post(`${backendUrl}api/hooks/create`, hook);
+        const response = await axios.post(`${backendUrl}api/hooks/create`, hook, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
         return response.data;
     } catch (error) {
         toast.error(error.response.data.message || error.message || error);
@@ -79,7 +93,11 @@ export const insertHook = async (hook) => {
 
 export const updateHook = async (hook: Hook) => {
     try {
-        const response = await axios.put(`${backendUrl}api/hooks/update/${hook._id}`, hook);
+        const response = await axios.put(`${backendUrl}api/hooks/update/${hook._id}`, hook, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
         return response.data;
     } catch (error) {
         toast.error(error.response.data.message || error.message || error);
@@ -89,7 +107,11 @@ export const updateHook = async (hook: Hook) => {
 
 export const deleteHook = async (id) => {
     try {
-        const response = await axios.delete(`${backendUrl}api/hooks/${id}`);
+        const response = await axios.delete(`${backendUrl}api/hooks/${id}`, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
         return response.data;
     } catch (error) {
         toast.error(error.response.data.message || error.message || error);
