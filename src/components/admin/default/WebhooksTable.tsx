@@ -88,19 +88,22 @@ export default function WebhooksTable() {
         </p>
       ),
     }),
-    // columnHelper.accessor("totalCalls", {
-    //   id: "totalCalls",
-    //   header: () => (
-    //     <p className="text-sm font-bold text-gray-600 dark:text-white">
-    //       Total Calls
-    //     </p>
-    //   ),
-    //   cell: (info) => (
-    //     <p className="text-sm font-bold text-navy-700 dark:text-white">
-    //       {info.getValue()}
-    //     </p>
-    //   ),
-    // }),
+    columnHelper.accessor("tradeDirection", {
+      id: "tradeDirection",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Total Calls
+        </p>
+      ),
+      cell: (info) => {
+        const tradeDirection = info.getValue() as string;
+        return (
+          <p className="text-sm font-bold text-navy-700 dark:text-white">
+            {tradeDirection === 'BOTH' ? 'BOTH' : tradeDirection === 'LONG_ONLY' ? 'Long Only' : 'Short Only'}
+          </p>
+        )
+      },
+    }),
     columnHelper.accessor("_id", {
       id: "_id",
       header: () => (
@@ -122,7 +125,7 @@ export default function WebhooksTable() {
   ];
 
   const [data, setData] = useState<Hook[]>([]);
-  const {jwtToken} = useContext(UserContext);
+  const { jwtToken } = useContext(UserContext);
 
   const table = useReactTable({
     data,

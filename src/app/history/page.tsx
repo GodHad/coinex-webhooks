@@ -106,7 +106,7 @@ const History = () => {
                 <div className="flex items-center gap-1 ">
                     Show
                     <select
-                        className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 px-3 py-1 text-sm outline-none"
+                        className="flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 px-3 py-1 text-sm outline-none"
                         value={pagination.perPage}
                         onChange={e => {
                             setPagination(prev => ({
@@ -130,7 +130,7 @@ const History = () => {
                         value={globalFilter}
                         onChange={value => setGlobalFilter(value.toString())}
                         placeholder={``}
-                        className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 px-3 py-1 text-sm outline-none"
+                        className="flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 px-3 py-1 text-sm outline-none"
                     />
                 </div>
             </div>

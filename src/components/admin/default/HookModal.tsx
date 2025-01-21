@@ -18,10 +18,11 @@ const HookModal = ({
         name: '',
         coinExApiKey: '',
         coinExApiSecret: '',
+        tradeDirection: 'BOTH',
         status: 0,
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setHook(prev => ({ ...prev, [name]: value }));
     }
@@ -37,6 +38,7 @@ const HookModal = ({
             name: '',
             coinExApiKey: '',
             coinExApiSecret: '',
+            tradeDirection: 'BOTH',
             status: 0,
         })
     }, [hook])
@@ -83,6 +85,26 @@ const HookModal = ({
                             value={_hook.url}
                             onChange={handleInputChange}
                         />
+                        <div className="mb-3">
+                            <label
+                                htmlFor={'tradeDirection'}
+                                className={`text-sm text-navy-700 dark:text-white ml-3 font-bold
+                                }`}
+                            >
+                                Trade Direction
+                            </label>
+                            <select
+                                className="flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 px-3 py-1 text-sm outline-none"
+                                name="tradeDirection"
+                                id="tradeDirection"
+                                value={_hook.tradeDirection}
+                                onChange={handleInputChange}
+                            >
+                                <option value="BOTH">BOTH</option>
+                                <option value="LONG_ONLY">Long Only</option>
+                                <option value="SHORT_ONLY">Short Only</option>
+                            </select>
+                        </div>
                         <InputField
                             variant="auth"
                             extra="mb-3"

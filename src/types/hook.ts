@@ -5,4 +5,5 @@ export type Hook = {
     coinExApiKey: string;
     coinExApiSecret: string;
     status: number;
+    tradeDirection: string;
 };
