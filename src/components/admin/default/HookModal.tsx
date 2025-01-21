@@ -66,7 +66,6 @@ const HookModal = ({
                     </div>
                     <form onSubmit={onSubmit} className="px-2 mt-4">
                         <InputField
-                            variant="auth"
                             extra="mb-3"
                             label="Webhook Name*"
                             placeholder="Webhook Name"
@@ -76,7 +75,6 @@ const HookModal = ({
                             onChange={handleInputChange}
                         />
                         <InputField
-                            variant="auth"
                             extra="mb-3"
                             label="Webhook URL*"
                             placeholder="Webhook URL"
@@ -91,7 +89,7 @@ const HookModal = ({
                                 className={`text-sm text-navy-700 dark:text-white ml-3 font-bold
                                 }`}
                             >
-                                Trade Direction
+                                Trade Direction*
                             </label>
                             <select
                                 className="flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 px-3 py-1 text-sm outline-none"
@@ -106,7 +104,6 @@ const HookModal = ({
                             </select>
                         </div>
                         <InputField
-                            variant="auth"
                             extra="mb-3"
                             label="CoinEx API Key*"
                             placeholder="CoinEx API Key"
@@ -116,7 +113,6 @@ const HookModal = ({
                             onChange={handleInputChange}
                         />
                         <InputField
-                            variant="auth"
                             extra="mb-3"
                             label="CoinEx API Secret*"
                             placeholder="CoinEx API Secret"
