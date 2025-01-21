@@ -88,6 +88,7 @@ const History = () => {
         debugColumns: false,
     });
 
+
     const handleGetHistories = async () => {
         setIsLoading(true);
         const result = await getHistories({ perPage: pagination.perPage, currentPage: pagination.currentPage, searchTerm: globalFilter });
