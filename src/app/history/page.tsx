@@ -47,7 +47,15 @@ const History = () => {
                 header: 'Status',
                 cell: info => {
                     const data = info.row.original.data;
-                    return <p className="text-sm font-bold text-navy-700 dark:text-white">{data.message}</p>
+                    return <p className={`text-sm font-bold ${data.code === 0 ? 'text-[#219653]' : 'text-[#d34053]'}`}>{data.code === 0 ? 'Success' : 'Failed'}</p>
+                }
+            },
+            {
+                accessorKey: 'data',
+                header: 'Message',
+                cell: info => {
+                    const data = info.row.original.data;
+                    return <p className={`text-sm font-bold text-navy-700 dark:text-white'}`}>{data.message}</p>
                 }
             },
             {
