@@ -81,8 +81,6 @@ const History = () => {
         columns,
         onGlobalFilterChange: setGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
         debugTable: true,
         debugHeaders: true,
         debugColumns: false,

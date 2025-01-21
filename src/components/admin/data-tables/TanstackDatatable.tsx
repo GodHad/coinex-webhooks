@@ -40,8 +40,8 @@ const TanstackDatatable = <TData,>({
                     ))}
                 </thead>
                 <tbody>
-                    {table.getPaginationRowModel().rows.length > 0 ? table
-                        .getPaginationRowModel()
+                    {table.getCoreRowModel().rows.length > 0 ? table
+                        .getCoreRowModel()
                         .rows
                         .map((row) => {
                             return (
