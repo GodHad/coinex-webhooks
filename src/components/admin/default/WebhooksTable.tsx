@@ -92,7 +92,7 @@ export default function WebhooksTable() {
       id: "tradeDirection",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Total Calls
+          Trade Direction
         </p>
       ),
       cell: (info) => {
