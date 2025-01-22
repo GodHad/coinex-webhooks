@@ -1,3 +1,5 @@
+import { AdminHook } from "./admin-hook";
+
 export type Hook = {
     _id?: string;
     name: string;
@@ -6,4 +8,6 @@ export type Hook = {
     coinExApiSecret: string;
     status: number;
     tradeDirection: string;
+    isSubscribed?: boolean;
+    adminHook?: string | AdminHook;
 };

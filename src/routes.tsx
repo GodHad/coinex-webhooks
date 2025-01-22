@@ -7,6 +7,7 @@ import {
   MdHistory,
   MdKey,
   MdLock,
+  MdPeople,
   MdPerson,
 } from 'react-icons/md';
 
@@ -14,20 +15,34 @@ const routes = [
   {
     name: 'My Webhooks',
     layout: '/dashboard',
-    path: '/',
+    path: '',
     icon: <MdKey className="h-6 w-6" />,
   },
   {
     name: 'Profile',
     layout: '/profile',
-    path: '/',
+    path: '',
     icon: <MdPerson className='h-6 w-6' />
   },
   {
     name: 'History',
     layout: '/history',
-    path: '/',
+    path: '',
     icon: <MdHistory className='h-6 w-6' />
+  },
+  {
+    name: 'Users',
+    layout: '/admin',
+    path: '/users',
+    icon: <MdPeople className='h-6 w-6' />,
+    isAdmin: true
+  },
+  {
+    name: 'Admin-Hooks',
+    layout: '/admin',
+    path: '/hooks',
+    icon: <MdKey className='h-6 w-6' />,
+    isAdmin: true,
   },
   {
     name: 'Sign In',

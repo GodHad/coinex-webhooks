@@ -2,10 +2,14 @@
 import { createContext } from 'react';
 
 export type User = {
+    _id?: string;
     firstName: string;
     lastName: string;
     email: string;
     password: string;
+    isAdmin?: boolean;
+    subscribed?: number;
+    subscribeEndDate?: Date;
 }
 
 type UserContextType = {

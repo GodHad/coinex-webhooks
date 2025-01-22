@@ -2,14 +2,12 @@
 
 import InputField from "components/fields/InputField"
 import UserContext, { User } from "contexts/UserContext"
-import { redirect } from "next/navigation"
 import { useContext, useState } from "react"
 import { toast } from "react-toastify"
 import { updateUser } from "utils/api"
 
 const ProfilePage = () => {
     const { user, setUser } = useContext(UserContext);
-    if (!user) redirect('/auth/sign-in');
 
     const [form, setForm] = useState<User>({
         firstName: '',

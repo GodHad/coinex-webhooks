@@ -1,7 +1,7 @@
 'use client'
 import ReactPagination from 'react-responsive-pagination';
 import 'react-responsive-pagination/themes/classic.css';
-import { ColumnDef, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { HistoryType } from "types/history";
@@ -43,7 +43,7 @@ const History = () => {
                 cell: info => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue() as string}</p>
             },
             {
-                accessorKey: 'data',
+                accessorKey: '_id',
                 header: 'Status',
                 cell: info => {
                     const data = info.row.original.data;

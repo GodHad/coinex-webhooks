@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Card from "components/card";
-import { MdAdd, MdCancel, MdCheckCircle, MdDeleteOutline, MdEdit, MdPause, MdPlayArrow } from "react-icons/md";
+import { MdAdd, MdCancel, MdCheck, MdCheckCircle, MdContentCopy, MdDeleteOutline, MdEdit, MdPause, MdPlayArrow } from "react-icons/md";
 import {
   createColumnHelper,
   flexRender,
@@ -15,6 +15,8 @@ import { deleteHook, getHooks, insertHook, updateHook } from "utils/api";
 import { toast } from "react-toastify";
 import HookModal from "./HookModal";
 import UserContext from "contexts/UserContext";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { AdminHook } from "types/admin-hook";
 
 const columnHelper = createColumnHelper<Hook>();
 
@@ -22,6 +24,7 @@ export default function WebhooksTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [hook, setHook] = useState<Hook | null>(null);
+  const { user } = useContext(UserContext);
 
   const columns = [
     columnHelper.accessor("name", {
@@ -40,11 +43,43 @@ export default function WebhooksTable() {
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">Webhook URL</p>
       ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
+      cell: (info) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [copied, setCopied] = useState(false);
+        const isSubscribed = info.row.original.isSubscribed;
+        const adminHook = info.row.original.adminHook;
+
+        const handleCopy = () => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000); // Reset to original icon after 2 seconds
+        };
+
+        return (
+          <div className="flex items-center space-x-2">
+            {!adminHook ?
+              <>
+                <p className="text-sm font-bold text-navy-700 dark:text-white">
+                  {info.getValue()}
+                </p>
+                <CopyToClipboard text={`https://api.nothingparticular.com/api/webhooks/${isSubscribed ? '' : user.email + '/'}${info.getValue()}`} onCopy={handleCopy}>
+                  <button
+                    className="text-gray-500 hover:text-blue-500 dark:text-gray-300 dark:hover:text-blue-400"
+                    title="Copy URL"
+                  >
+                    {copied ? (
+                      <MdCheck className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <MdContentCopy className="w-5 h-5" />
+                    )}
+                  </button>
+                </CopyToClipboard>
+              </>
+              :
+              `${(adminHook as AdminHook).name}(${(adminHook as AdminHook).pair})`
+            }
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("status", {
       id: "status",
@@ -162,27 +197,29 @@ export default function WebhooksTable() {
     setIsOpen(true);
   }
 
-  const handleSubmit = async (_hook: Hook) => {
+  const handleSubmit = async (_hook: Hook, isUsingAdminHook: boolean) => {
     if (!hook) {
-      const result = await insertHook(_hook);
+      const result = await insertHook(_hook, isUsingAdminHook);
       if (result) {
         setData(prev => [...prev, result.hook]);
         toast.success(result.message);
         setIsOpen(false);
+        setHook(null);
       }
     } else {
-      const result = await updateHook(_hook);
+      const result = await updateHook(_hook, isUsingAdminHook);
       if (result) {
         setData(prev => prev.map(hook => hook._id === _hook._id ? result.hook : hook));
         toast.success(result.message);
         setIsOpen(false);
+        setHook(null);
       }
     }
   }
 
   const handleSetStatus = async (_hook: Hook) => {
     _hook.status = 1 - _hook.status;
-    const result = await updateHook(_hook);
+    const result = await updateHook(_hook, !!_hook.adminHook);
     if (result) {
       setData(prev => prev.map(hook => hook._id === _hook._id ? result.hook : hook));
       toast.success(result.message);

@@ -5,7 +5,6 @@ import NavLink from 'components/link/NavLink';
 import { RiMoonFill, RiSunFill } from 'react-icons/ri';
 import Link from 'next/link';
 import UserContext from 'contexts/UserContext';
-import { redirect } from 'next/navigation';
 
 const Navbar = (props: {
   onOpenSidenav: () => void;
@@ -24,12 +23,6 @@ const Navbar = (props: {
     setUser(null);
     window.localStorage.removeItem('jwtToken');
   }
-
-  useEffect(() => {
-    if (!user) {
-      redirect('/auth/sign-in');
-    }
-  }, [user]);
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
