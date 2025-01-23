@@ -10,4 +10,5 @@ export type Hook = {
     tradeDirection: string;
     isSubscribed?: boolean;
     adminHook?: string | AdminHook;
+    amount?: number;
 };

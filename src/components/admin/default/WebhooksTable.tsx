@@ -81,6 +81,22 @@ export default function WebhooksTable() {
         );
       },
     }),
+    columnHelper.accessor('amount', {
+      id: 'amount',
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Amount
+        </p>
+      ),
+      cell: (info) => {
+        const adminHook = info.row.original.adminHook;
+        return (
+          <p className="text-sm font-bold text-navy-700 dark:text-white">
+            {adminHook ? info.getValue() : 'auto'}
+          </p>
+        )
+      }
+    }),
     columnHelper.accessor("status", {
       id: "status",
       header: () => (

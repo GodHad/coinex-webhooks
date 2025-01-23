@@ -58,7 +58,7 @@ export default function WebhooksTable() {
 
                 const handleCopy = () => {
                     setCopied(true);
-                    setTimeout(() => setCopied(false), 2000); // Reset to original icon after 2 seconds
+                    setTimeout(() => setCopied(false), 2000);
                 };
 
                 return (

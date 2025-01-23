@@ -24,6 +24,7 @@ const HookModal = ({
         tradeDirection: 'BOTH',
         adminHook: '',
         status: 0,
+        amount: 0
     });
 
     const [adminHooks, setAdminHooks] = useState<AdminHook[]>([]);
@@ -39,7 +40,7 @@ const HookModal = ({
     }
 
     useEffect(() => {
-        setHook(hook ? { ...hook, adminHook: typeof hook.adminHook === 'undefined' ? '' : (hook.adminHook as AdminHook)._id } : {
+        setHook(hook ? { ...hook, adminHook: typeof hook.adminHook === 'undefined' ? '' : typeof hook.adminHook === 'string' ? hook.adminHook : (hook.adminHook as AdminHook)._id } : {
             url: '',
             name: '',
             coinExApiKey: '',
@@ -47,6 +48,7 @@ const HookModal = ({
             tradeDirection: 'BOTH',
             adminHook: '',
             status: 0,
+            amount: 0
         })
     }, [hook]);
 
@@ -203,6 +205,15 @@ const HookModal = ({
                                     ))}
                                 </select>
                             </div>
+                            <InputField
+                                extra="mb-3"
+                                label="Amount*"
+                                placeholder="Amount"
+                                id="amount"
+                                type="number"
+                                value={(_hook.amount || 0).toString()}
+                                onChange={handleInputChange}
+                            />
                             <div className="mb-3">
                                 <label
                                     htmlFor={'tradeDirection'}
