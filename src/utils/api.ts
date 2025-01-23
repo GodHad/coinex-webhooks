@@ -138,7 +138,7 @@ export const getHistories = async ({
         return response.data
     } catch (error) {
         toast.error(error.response.data.message || error.message || error);
-        return [];
+        return false;
     }
 }
 

@@ -90,8 +90,10 @@ const History = () => {
     const handleGetHistories = async () => {
         setIsLoading(true);
         const result = await getHistories({ perPage: pagination.perPage, currentPage: pagination.currentPage, searchTerm: globalFilter });
-        setData(result.histories);
-        setPagination(result.pagination);
+        if (result) {
+            setData(result.histories);
+            setPagination(result.pagination);
+        }
         setIsLoading(false);
     }
 
